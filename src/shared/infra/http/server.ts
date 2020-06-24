@@ -7,14 +7,15 @@ import 'reflect-metadata';
 import uploadConfig from '@config/upload';
 import AppError from '@shared/errors/AppError';
 
-import '@shared/infra/typeorm';
 import routes from './routes';
+import '@shared/infra/typeorm';
+import '@shared/container';
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
-app.use('/files', express.static(uploadConfig.diretory));
+app.use('/files', express.static(uploadConfig.directory));
 app.use(routes);
 app.use(
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

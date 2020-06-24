@@ -1,0 +1,19 @@
+{
+    "cSpell.words": [
+        "Fake",
+        "Generated",
+        "assertions",
+        "dtos",
+        "fakes",
+        "jest",
+        "originalname",
+        "save",
+        "tsyringe",
+        "typeorm",
+        "updated",
+        "uuidv"
+    ],
+    "cSpell.enableFiletypes": [
+        "typescript"
+    ]
+}

@@ -1,20 +1,28 @@
 /* eslint-disable class-methods-use-this */
-import { getRepository } from 'typeorm';
-import path from 'path';
-import fs from 'fs';
-import uploadConfig from '@config/upload';
-import AppError from '@shared/errors/AppError';
-import User from '../infra/typeorm/entities/User';
+import { injectable, inject } from 'tsyringe';
 
-interface Request {
+import AppError from '@shared/errors/AppError';
+import IStorageProvider from '@shared/container/providers/StorageProvider/models/IStorageProvider';
+import User from '../infra/typeorm/entities/User';
+import IUsersRepository from '../repositories/IUsersRepository';
+
+interface IRequest {
   user_id: string;
   avatarFilename: string;
 }
 
+@injectable()
 class UpdateUserAvatarService {
-  public async execute({ user_id, avatarFilename }: Request): Promise<User> {
-    const usersRepository = getRepository(User);
-    const user = await usersRepository.findOne(user_id);
+  constructor(
+    @inject('UsersRepository')
+    private usersRepository: IUsersRepository,
+
+    @inject('StorageProvider')
+    private storageProvider: IStorageProvider,
+  ) {}
+
+  public async execute({ user_id, avatarFilename }: IRequest): Promise<User> {
+    const user = await this.usersRepository.findById(user_id);
 
     if (!user) {
       throw new AppError('Only authenticated users can change avatar');
@@ -22,16 +30,13 @@ class UpdateUserAvatarService {
 
     if (user.avatar) {
       // remover avatar
-      const userAvatarFilePath = path.join(uploadConfig.diretory, user.avatar);
-      const userAvatarFileExists = await fs.promises.stat(userAvatarFilePath);
-
-      if (userAvatarFileExists) {
-        await fs.promises.unlink(userAvatarFilePath);
-      }
+      await this.storageProvider.deleteFile(user.avatar);
     }
-    user.avatar = avatarFilename;
 
-    await usersRepository.save(user);
+    const fileName = await this.storageProvider.saveFile(avatarFilename);
+    user.avatar = fileName;
+
+    await this.usersRepository.save(user);
 
     return user;
   }

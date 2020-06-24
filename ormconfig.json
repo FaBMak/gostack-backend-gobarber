@@ -1,5 +1,4 @@
 {
-  "name": "default",
   "type": "postgres",
   "host": "localhost",
   "port": 5432,
@@ -8,10 +7,7 @@
   "database": "gobarber",
   "_synchronize": true,
   "_logging": false,
-  "entities": [
-    "src/modules/users/infra/typeorm/entities/*.ts",
-    "src/modules/appointments/infra/typeorm/entities/*.ts"
-  ],
+  "entities": ["src/modules/**/infra/typeorm/entities/*.ts"],
   "migrations": ["src/shared/infra/typeorm/migrations/*.ts"],
   "_subscribers": ["src/subscriber/**/*.ts"],
   "cli": { "migrationsDir": "src/shared/infra/typeorm/migrations" }

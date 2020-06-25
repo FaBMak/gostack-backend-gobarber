@@ -29,8 +29,11 @@ export default class SendForgotPasswordEmailService {
       throw new AppError('Email address not found');
     }
 
-    await this.userTokensRepository.generate(user.id);
+    const { token } = await this.userTokensRepository.generate(user.id);
 
-    this.mailProvider.sendMail(email, 'Pedido de Recuperação Recebido');
+    await this.mailProvider.sendMail(
+      email,
+      `Pedido de Recuperação Recebido: ${token}`,
+    );
   }
 }

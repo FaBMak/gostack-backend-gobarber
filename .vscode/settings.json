@@ -6,6 +6,7 @@
         "dtos",
         "fakes",
         "jest",
+        "middlewares",
         "originalname",
         "save",
         "tsyringe",
